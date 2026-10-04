@@ -15,7 +15,7 @@ download: true
 ## Lecture 6: AWS IAM and Cloud Security
 
 <div class="pt-8 opacity-70">
-Adil Akhmetov · Lesson 6
+Nauruzbayeva Farikha · Lesson 6
 </div>
 
 ---

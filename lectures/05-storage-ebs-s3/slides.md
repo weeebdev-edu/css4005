@@ -15,7 +15,7 @@ download: true
 ## Lecture 5: AWS Storage (EBS and S3)
 
 <div class="pt-8 opacity-70">
-Adil Akhmetov · Lesson 5
+Nauruzbayeva Farikha · Lesson 5
 </div>
 
 ---
@@ -451,7 +451,7 @@ transition: slide-left
 </v-clicks>
 
 ```text
-s3://narxoz-photos-adil/users/42/avatar.png
+s3://narxoz-photos-farikha/users/42/avatar.png
      └──── bucket ────┘ └────── key ──────┘
 ```
 
@@ -471,9 +471,9 @@ s3://narxoz-photos-adil/users/42/avatar.png
 </v-clicks>
 
 ```bash
-aws s3 ls s3://narxoz-photos-adil/users/42/
-aws s3 cp avatar.png s3://narxoz-photos-adil/users/42/avatar.png
-aws s3 sync ./site s3://narxoz-site-adil/
+aws s3 ls s3://narxoz-photos-farikha/users/42/
+aws s3 cp avatar.png s3://narxoz-photos-farikha/users/42/avatar.png
+aws s3 sync ./site s3://narxoz-site-farikha/
 ```
 
 ---
@@ -599,7 +599,7 @@ reviewed reason.
     "Effect": "Allow",
     "Principal": { "AWS": "arn:aws:iam::111122223333:role/app-server" },
     "Action": ["s3:GetObject", "s3:PutObject"],
-    "Resource": "arn:aws:s3:::narxoz-photos-adil/users/*"
+    "Resource": "arn:aws:s3:::narxoz-photos-farikha/users/*"
   }]
 }
 ```
@@ -639,8 +639,8 @@ private bucket.
 # Presigned URLs — temporary access
 
 ```bash
-aws s3 presign s3://narxoz-photos-adil/users/42/avatar.png --expires-in 300
-# https://narxoz-photos-adil.s3.eu-central-1.amazonaws.com/users/42/avatar.png?X-Amz-...
+aws s3 presign s3://narxoz-photos-farikha/users/42/avatar.png --expires-in 300
+# https://narxoz-photos-farikha.s3.eu-central-1.amazonaws.com/users/42/avatar.png?X-Amz-...
 ```
 
 <v-clicks>
