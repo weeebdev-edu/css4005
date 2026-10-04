@@ -1,0 +1,20 @@
+{
+  "name": "css4005",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lecture:05": "slidev lectures/05-storage-ebs-s3/slides.md --open",
+    "lecture:06": "slidev lectures/06-iam-security/slides.md --open",
+    "build:05": "slidev build lectures/05-storage-ebs-s3/slides.md --out dist/05-storage-ebs-s3 --base /css4005/05-storage-ebs-s3/",
+    "build:06": "slidev build lectures/06-iam-security/slides.md --out dist/06-iam-security --base /css4005/06-iam-security/",
+    "export:05": "slidev export lectures/05-storage-ebs-s3/slides.md --output pdfs/05-storage-ebs-s3.pdf",
+    "export:06": "slidev export lectures/06-iam-security/slides.md --output pdfs/06-iam-security.pdf"
+  },
+  "devDependencies": {
+    "@iconify-json/logos": "^1.2.14",
+    "@iconify-json/simple-icons": "^1.2.95",
+    "@slidev/cli": "^52.19.1",
+    "@slidev/theme-seriph": "^0.25.0",
+    "playwright-chromium": "^1.63.0"
+  }
+}
