@@ -1,11 +1,11 @@
 # Practice 07 — A Private Database (Amazon RDS)
 
 **Objective:** run a PostgreSQL database that **only the app tier can
-reach**, connect to it from the app tier, then take a snapshot and
-restore it into a **new** database. These are the skills from today's
+reach**, connect to it from the app tier, and understand how a snapshot
+restore gives you a **new** database. These are the skills from today's
 lecture.
 
-**Timebox:** ~45–60 min, in class. If you've been stuck on one step for
+**Timebox:** in class: ~55–60 min on Track A, ~40 min on Track B. If you've been stuck on one step for
 more than 10 minutes, stop and ask. Don't push through alone.
 
 > **How you're checked:** this practice is done in class and checked
@@ -19,8 +19,8 @@ You don't need AWS access to pass. Pick **one** track:
 
 | | Track A — real AWS | Track B — no AWS |
 |---|---|---|
-| Needs | An AWS account or learner lab, AWS CLI v2, ~15 min of waiting for RDS | Docker (or Podman) and a bash shell (Linux, macOS, or WSL / Git Bash on Windows) |
-| Database | RDS for PostgreSQL, `db.t4g.micro` | `postgres:17` container |
+| Needs | AWS Academy Learner Lab (or your own account), ~15 min of waiting for RDS | Docker (or Podman) and a bash shell (Linux, macOS, or WSL / Git Bash on Windows) |
+| Database | RDS for PostgreSQL, `db.t3.micro` | `postgres:17` container |
 | Slow step | Creating the DB instance: **start it first** | none |
 
 The ideas are the same on both tracks:
@@ -33,7 +33,7 @@ The ideas are the same on both tracks:
 | Public access: **No** | **No** `-p 5432:5432`: nothing is published on your laptop |
 | RDS instance | `course-db` container |
 | Endpoint DNS name | Container name `course-db` (Docker's built-in DNS) |
-| Managed master password in Secrets Manager | A generated password in an env file you never type |
+| Generated master password (Secrets Manager in production) | A generated password in an env file you never type |
 | App server in SG-APP | A throwaway `app` container on `db-private` running `psql` |
 | EBS storage behind RDS | Named volume `course-db-data` |
 | Manual snapshot | `pg_dump -Fc` file |
@@ -52,20 +52,33 @@ Be ready to **show** each of these:
 - [ ] A connection from the app tier (Track A: over TLS, `\conninfo`
       shows SSL) and a `products` table with at least 3 rows.
 - [ ] `app_user` can `SELECT` and `INSERT`, and `DELETE` is denied.
-- [ ] A manual snapshot (Track A: `available` in
-      `describe-db-snapshots`. Track B: `snapshot.dump`).
-- [ ] A restore into a **new** database with a **different endpoint**
-      that has your rows (Track B: required. Track A: stretch, see A7).
+- [ ] Track B: a `snapshot.dump` restored into a **new** database with a
+      **different endpoint** that has your rows. (Track A: snapshot and
+      restore are a stretch; be ready to explain what a restore creates.)
 - [ ] Track B: the data survived removing and recreating the container.
 - [ ] Cleanup done and shown.
 
 ---
 
-## Track A — real AWS
+## Track A — real AWS (AWS Academy Learner Lab)
 
-Use region **`eu-central-1`** (or the one your instructor gives you)
-for everything. Creating the DB takes **5–15 minutes**, so do A1–A3
-first, start A3, and do A4 while it's being created.
+> **Using AWS Academy Learner Lab**
+>
+> 1. Open the **AWS Academy Learner Lab** course → **Modules → Launch AWS
+>    Academy Learner Lab** → **Start Lab**. Wait until the dot next to
+>    **AWS** turns green (1–3 min), then click **AWS** to open the console.
+> 2. Use region **`us-east-1`** (N. Virginia). Per the Learner Lab Readme,
+>    only `us-east-1` and `us-west-2` are allowed; other regions fail.
+> 3. CLI: use the terminal on the lab page (the AWS CLI is already set
+>    up), or copy the credentials from **AWS Details → AWS CLI → Show**
+>    into `~/.aws/credentials` on your laptop. They change every session.
+> 4. Key pair: don't create one. Use the lab's **`vockey`**: **AWS Details
+>    → Download PEM** saves `labsuser.pem`.
+> 5. When you're done, clean up (A7) and click **End Lab**.
+
+Creating the DB takes **5–15 minutes**, so do A1–A3 first, start A3,
+and do A4 while it's being created. Budget about **55–60 minutes** for
+this track.
 
 ### A1. Network and security groups
 
@@ -76,7 +89,7 @@ In a real project, use the private DB subnets from the week 4 VPC
 (set `VPC` and `SUBNETS` by hand instead).
 
 ```bash
-export AWS_REGION=eu-central-1
+export AWS_REGION=us-east-1
 
 VPC=$(aws ec2 describe-vpcs --filters Name=is-default,Values=true \
   --query 'Vpcs[0].VpcId' --output text)
@@ -110,19 +123,33 @@ aws rds create-db-subnet-group --db-subnet-group-name lab07-db-subnets \
 
 ### A3. Create the database (start it now)
 
+Generate the master password on your laptop and keep it in a variable,
+so you never type it or paste it into a file:
+
 ```bash
+PW=$(openssl rand -base64 18 | tr -d '/@" ')
+echo "$PW" > .dbpw && chmod 600 .dbpw     # only so you can read it again later; never commit it
+
 aws rds create-db-instance \
   --db-instance-identifier lab07-db \
   --engine postgres \
-  --db-instance-class db.t4g.micro \
+  --db-instance-class db.t3.micro \
   --allocated-storage 20 --storage-type gp3 \
-  --master-username dbadmin --manage-master-user-password \
+  --master-username dbadmin --master-user-password "$PW" \
   --db-name shop \
   --db-subnet-group-name lab07-db-subnets \
   --vpc-security-group-ids $SG_DB \
   --no-publicly-accessible --no-multi-az \
   --storage-encrypted --backup-retention-period 1
 ```
+
+`db.t3.micro` is the safe default in Learner Lab. `db.t4g.micro` also
+works if your lab allows it.
+
+> **The production way:** instead of `--master-user-password`, use
+> `--manage-master-user-password`. RDS then creates the password itself
+> and stores it in **Secrets Manager**, and the app reads it through its
+> instance profile. Try it only if your lab allows Secrets Manager.
 
 Don't wait here. Go to A4 now and come back with:
 
@@ -133,12 +160,9 @@ aws rds wait db-instance-available --db-instance-identifier lab07-db
 ### A4. Launch the app server (while the DB is being created)
 
 ```bash
-aws ec2 create-key-pair --key-name lab07 --query KeyMaterial --output text > lab07.pem
-chmod 400 lab07.pem
-
 APP_ID=$(aws ec2 run-instances \
   --image-id resolve:ssm:/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64 \
-  --instance-type t3.micro --key-name lab07 \
+  --instance-type t3.micro --key-name vockey \
   --security-group-ids $SG_APP \
   --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=lab07-app}]' \
   --query 'Instances[0].InstanceId' --output text)
@@ -149,11 +173,14 @@ APP_IP=$(aws ec2 describe-instances --instance-ids $APP_ID \
 echo $APP_IP
 ```
 
+Download `labsuser.pem` (AWS Details → Download PEM) into this folder and
+run `chmod 400 labsuser.pem`.
+
 > In the week 4 design the app server sits in a private subnet behind
 > the web tier. Today it has a public IP only so you can SSH to it
 > quickly. The **database** is the private part.
 
-### A5. Find the endpoint and the password, prove the DB is private
+### A5. Find the endpoint, prove the DB is private
 
 On your laptop, once the DB is `available`:
 
@@ -165,20 +192,17 @@ echo $ENDPOINT
 nslookup $ENDPOINT           # → a PRIVATE address (172.31.x.x in the default VPC)
 nc -vz -w 5 $ENDPOINT 5432   # → times out. That's the point.
 
-SECRET=$(aws rds describe-db-instances --db-instance-identifier lab07-db \
-  --query 'DBInstances[0].MasterUserSecret.SecretArn' --output text)
-aws secretsmanager get-secret-value --secret-id "$SECRET" \
-  --query SecretString --output text      # {"username":"dbadmin","password":"..."}
+cat .dbpw                    # the password you generated in A3; you'll paste it once
 ```
 
-Copy the password (you'll paste it once). In a real app, the server
-reads this secret itself through its **instance profile** (lecture 6),
-and nobody copies it by hand.
+In a real app, nobody copies the password by hand: it lives in Secrets
+Manager and the server reads it through its **instance profile**
+(lecture 6).
 
 ### A6. Connect from the app tier over TLS
 
 ```bash
-ssh -i lab07.pem ec2-user@$APP_IP
+ssh -i labsuser.pem ec2-user@$APP_IP
 ```
 
 On the app server:
@@ -221,29 +245,42 @@ psql "host=$ENDPOINT dbname=shop user=app_user password=change-me-app sslmode=re
   -c "DELETE FROM products;"      # → permission denied
 ```
 
-### A7. Manual snapshot, then restore = new endpoint
+### A7. Cleanup (required, because RDS bills per hour)
 
-Back on your laptop:
+```bash
+aws rds delete-db-instance --db-instance-identifier lab07-db \
+  --skip-final-snapshot --delete-automated-backups
+aws ec2 terminate-instances --instance-ids $APP_ID
+
+aws rds wait db-instance-deleted --db-instance-identifier lab07-db
+aws rds delete-db-subnet-group --db-subnet-group-name lab07-db-subnets
+
+aws ec2 wait instance-terminated --instance-ids $APP_ID
+aws ec2 delete-security-group --group-id $SG_DB     # SG_DB first: it references SG_APP
+aws ec2 delete-security-group --group-id $SG_APP
+rm -f .dbpw
+```
+
+If you did the stretch below, also delete `lab07-db-restored` and the
+snapshot `lab07-db-snap`. Show `aws rds describe-db-instances` with
+nothing `lab07` left, then click **End Lab**.
+
+### Stretch (optional, only with 15+ minutes left): snapshot and restore
+
+Before cleanup:
 
 ```bash
 aws rds create-db-snapshot --db-instance-identifier lab07-db \
   --db-snapshot-identifier lab07-db-snap
 aws rds wait db-snapshot-available --db-snapshot-identifier lab07-db-snap
-aws rds describe-db-snapshots --db-snapshot-identifier lab07-db-snap \
-  --query 'DBSnapshots[0].[DBSnapshotIdentifier,Status,SnapshotType]' --output table
-```
 
-**Stretch (only if you have 15+ minutes left):** restore it. This
-creates a second instance, which takes as long as the first one.
-
-```bash
 aws rds restore-db-instance-from-db-snapshot \
   --db-instance-identifier lab07-db-restored \
   --db-snapshot-identifier lab07-db-snap \
-  --db-instance-class db.t4g.micro \
+  --db-instance-class db.t3.micro \
   --db-subnet-group-name lab07-db-subnets \
   --vpc-security-group-ids $SG_DB \
-  --no-publicly-accessible --manage-master-user-password
+  --no-publicly-accessible
 aws rds wait db-instance-available --db-instance-identifier lab07-db-restored
 
 aws rds describe-db-instances \
@@ -251,32 +288,9 @@ aws rds describe-db-instances \
   --output table             # two different endpoints
 ```
 
-No time? Then be ready to explain what the restore would create and
-what you'd have to change in the app.
-
-### A8. Cleanup (required, because RDS bills per hour)
-
-```bash
-aws rds delete-db-instance --db-instance-identifier lab07-db \
-  --skip-final-snapshot --delete-automated-backups
-aws rds delete-db-instance --db-instance-identifier lab07-db-restored \
-  --skip-final-snapshot --delete-automated-backups          # if you did the stretch
-aws ec2 terminate-instances --instance-ids $APP_ID
-
-aws rds wait db-instance-deleted --db-instance-identifier lab07-db
-aws rds delete-db-snapshot --db-snapshot-identifier lab07-db-snap
-aws rds delete-db-subnet-group --db-subnet-group-name lab07-db-subnets
-
-aws ec2 wait instance-terminated --instance-ids $APP_ID
-aws ec2 delete-security-group --group-id $SG_DB     # SG_DB first: it references SG_APP
-aws ec2 delete-security-group --group-id $SG_APP
-aws ec2 delete-key-pair --key-name lab07 && rm -f lab07.pem
-```
-
-The master-password secret that RDS created is deleted together with
-the instance. Show `aws rds describe-db-instances` and
-`aws rds describe-db-snapshots --snapshot-type manual` with nothing
-`lab07` left.
+Each step takes as long as creating the DB, so this rarely fits in class.
+Either way, be ready to explain what a restore creates and what you'd
+have to change in the app.
 
 ---
 
@@ -436,10 +450,10 @@ rm -f db.env app.env snapshot.dump schema.sql
    `10.0.2.0/24`? (Track B: what plays that role on your machine?)
 2. Your database is single-AZ. Why does the DB subnet group still need
    subnets in **two** AZs?
-3. Where does the master password live, and why did you never choose
-   or type it? How would a real app get it?
-4. You restored a snapshot. What changed, and what must you update in
-   the app?
+3. How did you create the master password, and why didn't you type it
+   or put it in a file you'd commit? How would a real app get it?
+4. When you restore a snapshot, what changes, and what must you update
+   in the app?
 5. Your laptop can't connect to the database. Bug or feature? How would
    a developer legitimately get in?
 6. Manual snapshot vs automated backups with point-in-time restore:
@@ -447,6 +461,11 @@ rm -f db.env app.env snapshot.dump schema.sql
 
 ## Common mistakes
 
+- **`UnauthorizedOperation` / "not authorized" in Learner Lab (Track A).**
+  You're in the wrong region (use `us-east-1`), the lab session expired
+  (click **Start Lab** again and refresh the credentials), or you used a
+  feature the lab blocks (e.g. Secrets Manager): use the plain
+  `--master-user-password` path.
 - **Waiting for RDS and doing nothing.** Creation takes 5–15 minutes.
   Start A3, then do A4 while it runs.
 - **`psql` from the laptop "doesn't work" (Track A).** That's correct:
