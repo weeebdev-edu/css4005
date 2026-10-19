@@ -1,6 +1,6 @@
 ---
 theme: seriph
-title: "CSS4005 — Lecture 8: Midterm Review and AWS Architecture"
+title: "CSS4005 — Lecture 8: AWS Architecture"
 info: |
   CSS4005 — Cloud Infrastructure Construction · Narxoz University
   Lecture 8 of 15
@@ -12,7 +12,7 @@ download: true
 
 # CSS4005 — Cloud Infrastructure Construction
 
-## Lecture 8: Midterm Review and AWS Architecture
+## Lecture 8: AWS Architecture
 
 <div class="pt-8 opacity-70">
 Nauruzbayeva Farikha · Lesson 8
@@ -40,8 +40,6 @@ layout: default
 
 <v-clicks>
 
-- [ ] Midterm review: weeks 1–7 in one pass
-- [ ] Review quick checks — test yourself
 - [ ] The AWS Well-Architected Framework: six pillars
 - [ ] Reading and drawing architecture diagrams
 - [ ] Building a three-tier architecture from parts you already know
@@ -78,287 +76,6 @@ transition: slide-left
 ---
 
 # Block 1
-## Midterm review: weeks 1–7
-
----
----
-
-# Week 1 — Cloud fundamentals
-
-<v-clicks>
-
-- **Cloud** = on-demand, self-service, pay-as-you-go access to shared
-  computing resources over the network.
-- **Service models:** IaaS (EC2 — you manage the OS), PaaS (RDS — you
-  manage data and access), SaaS (you just use the product).
-- **Deployment models:** public, private, hybrid.
-- **Global infrastructure:** a **region** is a geographic area; an
-  **Availability Zone** is one or more separate data centers inside it,
-  with independent power and networking.
-- **Shared responsibility:** AWS secures *of* the cloud (hardware,
-  facilities); you secure what you put *in* it (data, access, config).
-
-</v-clicks>
-
----
----
-
-# Week 2 — Linux for the cloud
-
-<v-clicks>
-
-- Every server you launch is (usually) Linux, reached over **SSH** with a
-  key pair.
-- Users, groups and **file permissions** (`chmod`, `chown`) — and
-  `chmod 400` on private keys.
-- **Packages and services:** `dnf`/`apt`, `systemctl enable --now`.
-- Where to look when something breaks: logs (`journalctl`,
-  `/var/log/...`), `ss -tulpn` for listening ports.
-
-</v-clicks>
-
-<div v-click class="mt-6 p-4 rounded bg-blue-500/10 text-sm">
-Most cloud troubleshooting is still Linux troubleshooting — on a machine
-you can't walk up to.
-</div>
-
----
----
-
-# Week 3 — Amazon EC2
-
-<v-clicks>
-
-- An instance = an **AMI** + an **instance type** + storage + network +
-  a security group.
-- **Lifecycle:** stop keeps the EBS root volume (still billed);
-  terminate deletes the instance (and, by default, the root volume).
-- **User data** runs once at first boot — bootstrap installs and config.
-- **Instance metadata** (IMDSv2) and **instance profiles** give the
-  instance its identity and temporary credentials.
-- Pricing models: on-demand, savings plans/reserved, spot.
-
-</v-clicks>
-
----
----
-
-# Week 4 — Networking: VPC
-
-<v-clicks>
-
-- A **VPC** is your private network in a region; **subnets** live in one
-  AZ each.
-- **Public subnet** = route table has `0.0.0.0/0 → Internet Gateway`.
-- **Private subnet** = no route from the internet; outbound via a
-  **NAT gateway** in a public subnet.
-- **Security groups** — stateful, allow-only, attached to instances.
-- **Network ACLs** — stateless, allow and deny, attached to subnets.
-- The three-tier lab: web public, app private, DB private — and only the
-  required ports between them.
-
-</v-clicks>
-
----
----
-
-# Week 5 — Storage: EBS and S3
-
-<div class="grid grid-cols-2 gap-6 mt-2 text-sm">
-<div>
-
-### EBS (block)
-
-- A disk for **one** instance, in **one** AZ
-- Format, mount, `/etc/fstab` by UUID with `nofail`
-- **Snapshots** are incremental, stored in S3
-- Restore a snapshot = a new volume (any AZ in the region)
-
-</div>
-<div>
-
-### S3 (object)
-
-- Buckets and objects; names are global, data is regional
-- **Versioning** protects from overwrite and delete
-- **Lifecycle rules** move or expire objects
-- **Block Public Access** on by default — keep it on
-- **Presigned URLs** for temporary sharing
-
-</div>
-</div>
-
----
----
-
-# Week 6 — IAM and cloud security
-
-<v-clicks>
-
-- **Users** (people), **groups** (permissions by job), **roles**
-  (temporary credentials for services and people).
-- Policy evaluation: **explicit deny > explicit allow > implicit deny**.
-- **Least privilege:** start from nothing, allow only what the job needs.
-- **Instance profiles** instead of access keys on servers.
-- Root user: MFA on, no access keys, not for daily work.
-
-</v-clicks>
-
----
----
-
-# Week 7 — Amazon RDS
-
-<v-clicks>
-
-- Managed relational DB: AWS patches, backs up and fails over; you own
-  access, schema and data.
-- **DB subnet group** across two AZs, private subnets, not publicly
-  accessible.
-- SG-DB allows the DB port **only from SG-APP**.
-- **Backups:** automated (point-in-time) + manual snapshots; a restore is
-  a **new** instance.
-- **Multi-AZ** for availability; **read replicas** for read scaling.
-
-</v-clicks>
-
----
----
-
-# How the midterm checks this
-
-<v-clicks>
-
-- The format, date and weighting are **as announced by your instructor**.
-- Expect to **explain**, not just recall: "why this, not that?"
-- Expect to **read or draw a diagram** — the same kind we build today.
-- Expect "what if" questions: a subnet has no route, an SG is too open,
-  an AZ fails, a key leaks.
-
-</v-clicks>
-
-<div v-click class="mt-6 p-4 rounded bg-blue-500/10 text-sm">
-Best preparation: the labs and practices from weeks 3–7, and being able
-to say <b>why</b> each step was there.
-</div>
-
----
-layout: section
-transition: slide-left
----
-
-# Block 2
-## Review quick checks
-
----
-layout: center
-class: text-center
----
-
-# Quick check 1
-
-<div class="text-xl mt-4 max-w-2xl mx-auto text-left">
-An EC2 instance in a subnet can't reach the internet, even though its
-security group allows all outbound traffic. Name two things to check.
-</div>
-
-<div v-click class="mt-8 text-lg opacity-70 text-left max-w-2xl mx-auto">
-The subnet's route table (is there <code>0.0.0.0/0</code> to an IGW, or to
-a NAT gateway for a private subnet?), and whether the instance has a
-public IP (for a public subnet). Also check the network ACL.
-</div>
-
----
-layout: center
-class: text-center
----
-
-# Quick check 2
-
-<div class="text-xl mt-4 max-w-2xl mx-auto text-left">
-You stopped an instance to save money. What are you still paying for?
-</div>
-
-<div v-click class="mt-8 text-lg opacity-70 text-left max-w-2xl mx-auto">
-EBS volumes (including the root volume), snapshots, and any public IPv4
-or Elastic IP address that stays allocated.
-</div>
-
----
-layout: center
-class: text-center
----
-
-# Quick check 3
-
-<div class="text-xl mt-4 max-w-2xl mx-auto text-left">
-Your EBS volume is in <code>us-east-1a</code>. You need the same data on
-an instance in <code>us-east-1b</code>. How?
-</div>
-
-<div v-click class="mt-8 text-lg opacity-70 text-left max-w-2xl mx-auto">
-Take a snapshot, then create a new volume from it in
-<code>us-east-1b</code> and attach it there. A volume can't be attached
-across AZs.
-</div>
-
----
-layout: center
-class: text-center
----
-
-# Quick check 4
-
-<div class="text-xl mt-4 max-w-2xl mx-auto text-left">
-A user's policy allows <code>s3:*</code> on a bucket, and a second policy
-denies <code>s3:DeleteObject</code>. Can the user delete objects?
-</div>
-
-<div v-click class="mt-8 text-lg opacity-70 text-left max-w-2xl mx-auto">
-No. An explicit deny always beats an allow.
-</div>
-
----
-layout: center
-class: text-center
----
-
-# Quick check 5
-
-<div class="text-xl mt-4 max-w-2xl mx-auto text-left">
-Someone deletes an object by mistake in a bucket with versioning on.
-Is it gone?
-</div>
-
-<div v-click class="mt-8 text-lg opacity-70 text-left max-w-2xl mx-auto">
-No. S3 adds a delete marker; the previous version is still there.
-Deleting the delete marker brings the object back.
-</div>
-
----
-layout: center
-class: text-center
----
-
-# Quick check 6
-
-<div class="text-xl mt-4 max-w-2xl mx-auto text-left">
-Your app should reach the database, but nothing else should. How do you
-write the security group rule?
-</div>
-
-<div v-click class="mt-8 text-lg opacity-70 text-left max-w-2xl mx-auto">
-On SG-DB: allow the DB port (e.g. 5432 or 3306) with the
-<b>source = the app tier's security group</b>, not a CIDR range, and the
-DB not publicly accessible.
-</div>
-
----
-layout: section
-transition: slide-left
----
-
-# Block 3
 ## The AWS Well-Architected Framework
 
 ---
@@ -440,7 +157,7 @@ layout: section
 transition: slide-left
 ---
 
-# Block 4
+# Block 2
 ## Reading and drawing architecture diagrams
 
 ---
@@ -508,7 +225,7 @@ layout: section
 transition: slide-left
 ---
 
-# Block 5
+# Block 3
 ## Building a three-tier architecture
 
 ---
@@ -616,7 +333,7 @@ layout: section
 transition: slide-left
 ---
 
-# Block 6
+# Block 4
 ## Single points of failure
 
 ---
@@ -674,7 +391,7 @@ layout: section
 transition: slide-left
 ---
 
-# Block 7
+# Block 5
 ## Today's practice
 
 ---
@@ -718,7 +435,6 @@ login needed.
 
 <v-clicks>
 
-- [ ] Explain the core idea of each topic from weeks 1–7 in one or two sentences
 - [ ] Name the six Well-Architected pillars and give an example of each
 - [ ] Read an AWS architecture diagram: region, VPC, AZs, subnets, services, flows
 - [ ] Draw a three-tier architecture across two AZs from known components
@@ -732,7 +448,6 @@ layout: default
 
 # Before next lecture
 
-- [ ] Prepare for the midterm as announced by your instructor
 - [ ] Redraw today's three-tier diagram from memory, with ports on the arrows
 - [ ] Note every place in your design where you wrote "load balancer" — that's next week
 

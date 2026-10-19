@@ -3,8 +3,7 @@
 **Objective:** in pairs, design an AWS architecture for a real scenario
 using only the services from weeks 1–7, and **defend** it: say which
 Well-Architected pillar each part serves and what happens when
-something fails. This is the skill from today's lecture, and good
-practice for the midterm.
+something fails. This is the skill from today's lecture.
 
 **Timebox:** ~45–50 min in class. No AWS account needed. If you're stuck
 for more than 10 minutes, ask instead of guessing.
