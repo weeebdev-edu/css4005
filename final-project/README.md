@@ -14,7 +14,7 @@ report, a short presentation and an oral defense.
 ## 1. Overview
 
 You get a small, ready-made web application: **`campus-app`** from the
-template repository **`weeebdev-edu/final-project-template`**. The app is
+template repository **`weeebdev-edu/css4005-final-project`**. The app is
 not what we grade. What we grade is the **platform you build around it**:
 the network, compute, database, storage, identity, secrets, monitoring,
 deployment pipeline and the evidence that it survives failures and stays
