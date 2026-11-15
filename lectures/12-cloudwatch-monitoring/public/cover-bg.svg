@@ -1,0 +1,53 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="55%" stop-color="#132743"/>
+      <stop offset="100%" stop-color="#0e4f77"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="area" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7dd3fc" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#7dd3fc" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- soft glow accent, upper right -->
+  <circle cx="1650" cy="180" r="420" fill="url(#glow)"/>
+
+  <!-- metric graph motif, bottom-right, subtle: a time series crossing an alarm threshold -->
+  <g opacity="0.5">
+    <!-- axes -->
+    <path d="M 1120 1030 L 1860 1030" stroke="#7dd3fc" stroke-width="2" opacity="0.5" fill="none"/>
+    <!-- threshold (dashed) -->
+    <path d="M 1120 860 L 1860 860" stroke="#fbbf24" stroke-width="2" stroke-dasharray="14 10" opacity="0.8" fill="none"/>
+    <!-- area under the series -->
+    <path d="M 1120 990 L 1220 960 L 1320 975 L 1420 930 L 1520 900 L 1600 820 L 1680 790 L 1760 880 L 1860 940 L 1860 1030 L 1120 1030 Z" fill="url(#area)"/>
+    <!-- the series -->
+    <path d="M 1120 990 L 1220 960 L 1320 975 L 1420 930 L 1520 900 L 1600 820 L 1680 790 L 1760 880 L 1860 940" stroke="#7dd3fc" stroke-width="3" fill="none"/>
+  </g>
+  <g fill="#7dd3fc" opacity="0.6">
+    <circle cx="1220" cy="960" r="7"/>
+    <circle cx="1320" cy="975" r="7"/>
+    <circle cx="1420" cy="930" r="7"/>
+    <circle cx="1520" cy="900" r="7"/>
+    <circle cx="1760" cy="880" r="7"/>
+  </g>
+  <!-- breaching datapoints -->
+  <g fill="#fbbf24" opacity="0.75">
+    <circle cx="1600" cy="820" r="10"/>
+    <circle cx="1680" cy="790" r="10"/>
+  </g>
+
+  <!-- faint dot grid, lower-left -->
+  <g fill="#7dd3fc" opacity="0.18">
+    <circle cx="80" cy="920" r="3"/><circle cx="140" cy="920" r="3"/><circle cx="200" cy="920" r="3"/><circle cx="260" cy="920" r="3"/>
+    <circle cx="80" cy="960" r="3"/><circle cx="140" cy="960" r="3"/><circle cx="200" cy="960" r="3"/><circle cx="260" cy="960" r="3"/>
+    <circle cx="80" cy="1000" r="3"/><circle cx="140" cy="1000" r="3"/><circle cx="200" cy="1000" r="3"/><circle cx="260" cy="1000" r="3"/>
+  </g>
+</svg>
