@@ -1,0 +1,56 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="55%" stop-color="#132743"/>
+      <stop offset="100%" stop-color="#0e4f77"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- soft glow accent, upper right -->
+  <circle cx="1650" cy="180" r="420" fill="url(#glow)"/>
+
+  <g transform="translate(680 380) scale(0.65)">
+  <!-- architecture motif, bottom-right, subtle: a load balancer over two zones,
+       three tiers per zone, a database pair linked across the zones -->
+  <g opacity="0.45" fill="none" stroke="#7dd3fc" stroke-width="3">
+    <!-- the two zones -->
+    <rect x="1180" y="760" width="300" height="290" rx="18" stroke-dasharray="12 10"/>
+    <rect x="1540" y="760" width="300" height="290" rx="18" stroke-dasharray="12 10"/>
+    <!-- load balancer to both zones -->
+    <path d="M 1510 690 L 1330 800"/>
+    <path d="M 1510 690 L 1690 800"/>
+    <!-- app to db in each zone -->
+    <path d="M 1330 860 L 1330 940"/>
+    <path d="M 1690 860 L 1690 940"/>
+    <!-- replication across zones -->
+    <path d="M 1370 990 L 1650 990" stroke-dasharray="8 8"/>
+  </g>
+  <!-- load balancer -->
+  <g fill="#132743" stroke="#7dd3fc" stroke-width="3" opacity="0.6">
+    <rect x="1460" y="650" width="100" height="44" rx="12"/>
+    <!-- app nodes -->
+    <rect x="1290" y="800" width="80" height="60" rx="10"/>
+    <rect x="1650" y="800" width="80" height="60" rx="10"/>
+  </g>
+  <!-- database primary (filled) and replica (outlined) -->
+  <g opacity="0.75">
+    <circle cx="1330" cy="990" r="26" fill="#38bdf8"/>
+    <circle cx="1690" cy="990" r="26" fill="none" stroke="#34d399" stroke-width="4"/>
+  </g>
+
+  </g>
+
+  <!-- faint dot grid, lower-left -->
+  <g fill="#7dd3fc" opacity="0.18">
+    <circle cx="80" cy="920" r="3"/><circle cx="140" cy="920" r="3"/><circle cx="200" cy="920" r="3"/><circle cx="260" cy="920" r="3"/>
+    <circle cx="80" cy="960" r="3"/><circle cx="140" cy="960" r="3"/><circle cx="200" cy="960" r="3"/><circle cx="260" cy="960" r="3"/>
+    <circle cx="80" cy="1000" r="3"/><circle cx="140" cy="1000" r="3"/><circle cx="200" cy="1000" r="3"/><circle cx="260" cy="1000" r="3"/>
+  </g>
+</svg>
