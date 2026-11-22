@@ -161,6 +161,9 @@ HTML_HEAD
         pdf_link="${pdf_link:+$pdf_link }<a href=\"pdfs/practice-${slug}-${n}.pdf\">Practice $n</a>"
       fi
     done
+    if [ -f "pdfs/lab-$slug.pdf" ]; then
+      pdf_link="${pdf_link:+$pdf_link }<a href=\"pdfs/lab-${slug}.pdf\">Lab</a>"
+    fi
     printf '  <li><span class="title">%s</span><span class="links"><a href="%s/">Slides</a>%s</span></li>\n' \
       "$title" "$slug" "${pdf_link:+ $pdf_link}"
   done
