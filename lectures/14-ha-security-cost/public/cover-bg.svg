@@ -1,0 +1,57 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="55%" stop-color="#132743"/>
+      <stop offset="100%" stop-color="#0e4f77"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- soft glow accent, upper right -->
+  <circle cx="1650" cy="180" r="420" fill="url(#glow)"/>
+
+  <!-- two availability zones, bottom-right: AZ-a lost (dimmed, crossed), AZ-b serving -->
+  <g fill="none" stroke="#7dd3fc" stroke-width="3" stroke-dasharray="14 10">
+    <rect x="1080" y="790" width="330" height="210" rx="18" opacity="0.25"/>
+    <rect x="1470" y="790" width="330" height="210" rx="18" opacity="0.55"/>
+  </g>
+  <!-- the load balancer above both zones, with its two paths -->
+  <g fill="none" stroke="#7dd3fc" stroke-width="3">
+    <path d="M 1440 700 L 1245 790" opacity="0.2" stroke-dasharray="8 8"/>
+    <path d="M 1440 700 L 1635 790" opacity="0.6"/>
+  </g>
+  <rect x="1395" y="660" width="90" height="40" rx="10" fill="#132743" stroke="#7dd3fc" stroke-width="3" opacity="0.7"/>
+  <!-- instances: AZ-a dimmed, AZ-b healthy -->
+  <g fill="#132743" stroke="#7dd3fc" stroke-width="3">
+    <rect x="1135" y="860" width="70" height="70" rx="12" opacity="0.25"/>
+    <rect x="1285" y="860" width="70" height="70" rx="12" opacity="0.25"/>
+    <rect x="1525" y="860" width="70" height="70" rx="12" opacity="0.7"/>
+    <rect x="1675" y="860" width="70" height="70" rx="12" opacity="0.7"/>
+  </g>
+  <!-- the cross over the lost zone -->
+  <g stroke="#f87171" stroke-width="5" stroke-linecap="round" opacity="0.45">
+    <path d="M 1215 865 L 1275 925"/>
+    <path d="M 1275 865 L 1215 925"/>
+  </g>
+  <!-- passed checks inside the healthy instances -->
+  <g fill="none" stroke="#34d399" stroke-width="4" opacity="0.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 1543 895 L 1555 907 L 1577 883"/>
+    <path d="M 1693 895 L 1705 907 L 1727 883"/>
+  </g>
+  <!-- a small shield, upper part of the motif -->
+  <path d="M 1760 600 L 1810 618 L 1810 655 C 1810 685 1785 702 1760 712 C 1735 702 1710 685 1710 655 L 1710 618 Z"
+        fill="none" stroke="#7dd3fc" stroke-width="3" opacity="0.5"/>
+
+  <!-- faint dot grid, lower-left -->
+  <g fill="#7dd3fc" opacity="0.18">
+    <circle cx="80" cy="920" r="3"/><circle cx="140" cy="920" r="3"/><circle cx="200" cy="920" r="3"/><circle cx="260" cy="920" r="3"/>
+    <circle cx="80" cy="960" r="3"/><circle cx="140" cy="960" r="3"/><circle cx="200" cy="960" r="3"/><circle cx="260" cy="960" r="3"/>
+    <circle cx="80" cy="1000" r="3"/><circle cx="140" cy="1000" r="3"/><circle cx="200" cy="1000" r="3"/><circle cx="260" cy="1000" r="3"/>
+  </g>
+</svg>
