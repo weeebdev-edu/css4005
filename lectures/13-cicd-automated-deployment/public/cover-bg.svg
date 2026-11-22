@@ -1,0 +1,55 @@
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="55%" stop-color="#132743"/>
+      <stop offset="100%" stop-color="#0e4f77"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+
+  <!-- soft glow accent, upper right -->
+  <circle cx="1650" cy="180" r="420" fill="url(#glow)"/>
+
+  <!-- pipeline motif, bottom-right, subtle: stages in a row, then a blue/green split -->
+  <g opacity="0.5" fill="none" stroke="#7dd3fc" stroke-width="3">
+    <!-- the line through the stages -->
+    <path d="M 1080 900 L 1560 900"/>
+    <!-- split to blue (up) and green (down) -->
+    <path d="M 1560 900 C 1620 900 1630 830 1690 830 L 1860 830"/>
+    <path d="M 1560 900 C 1620 900 1630 970 1690 970 L 1860 970" stroke-dasharray="12 10"/>
+  </g>
+  <!-- stages: lint, test, build, scan, push -->
+  <g fill="#132743" stroke="#7dd3fc" stroke-width="3" opacity="0.6">
+    <rect x="1060" y="875" width="50" height="50" rx="10"/>
+    <rect x="1170" y="875" width="50" height="50" rx="10"/>
+    <rect x="1280" y="875" width="50" height="50" rx="10"/>
+    <rect x="1390" y="875" width="50" height="50" rx="10"/>
+    <rect x="1500" y="875" width="50" height="50" rx="10"/>
+  </g>
+  <!-- passed checks inside the stages -->
+  <g fill="none" stroke="#7dd3fc" stroke-width="4" opacity="0.7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M 1073 900 L 1082 909 L 1098 891"/>
+    <path d="M 1183 900 L 1192 909 L 1208 891"/>
+    <path d="M 1293 900 L 1302 909 L 1318 891"/>
+    <path d="M 1403 900 L 1412 909 L 1428 891"/>
+    <path d="M 1513 900 L 1522 909 L 1538 891"/>
+  </g>
+  <!-- the two environments: blue live, green idle -->
+  <g opacity="0.75">
+    <circle cx="1860" cy="830" r="16" fill="#38bdf8"/>
+    <circle cx="1860" cy="970" r="16" fill="#34d399" opacity="0.6"/>
+  </g>
+
+  <!-- faint dot grid, lower-left -->
+  <g fill="#7dd3fc" opacity="0.18">
+    <circle cx="80" cy="920" r="3"/><circle cx="140" cy="920" r="3"/><circle cx="200" cy="920" r="3"/><circle cx="260" cy="920" r="3"/>
+    <circle cx="80" cy="960" r="3"/><circle cx="140" cy="960" r="3"/><circle cx="200" cy="960" r="3"/><circle cx="260" cy="960" r="3"/>
+    <circle cx="80" cy="1000" r="3"/><circle cx="140" cy="1000" r="3"/><circle cx="200" cy="1000" r="3"/><circle cx="260" cy="1000" r="3"/>
+  </g>
+</svg>
