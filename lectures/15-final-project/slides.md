@@ -1105,7 +1105,7 @@ VM through `LabInstanceProfile` into a `0400` file.
 manager; the template app starts with its secrets as files.
 
 <div v-click class="mt-4 opacity-70">
-Checked orally: your variant table, one ADR, the plan line, a green CI
+Report with screenshots on Canvas: your variant table, one ADR, the plan line, a green CI
 run, and where the secret ended up.
 </div>
 

@@ -1261,7 +1261,7 @@ nginx switching between **blue** and **green**: a health gate, a smoke
 test and an automatic switch-back.
 
 <div v-click class="mt-4 opacity-70">
-Checked orally: the pipeline run, the plan or deploy log, a stopped bad
+Report with screenshots on Canvas: the pipeline run, the plan or deploy log, a stopped bad
 release, the rollback, and the cleanup.
 </div>
 

@@ -1,6 +1,9 @@
 # Lab Work 15 — Final Cloud Infrastructure Project: Review, Recover, Rotate
 
-This laboratory work is assigned only for attendance verification.
+**Submission: a report with screenshots is required.** Upload one PDF to
+Canvas with your repository link and, for **every** task you did,
+screenshots of the commands, their output and the result, each with a
+one-line caption. A lab without a screenshot report is not accepted.
 
 In the practice you wrote your own design down and built its first
 pieces. In this lab you are the engineer who **checks** a design and

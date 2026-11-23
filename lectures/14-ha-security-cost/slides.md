@@ -1133,7 +1133,7 @@ Kill a zone (retries off vs on), freeze a zone, crash a process, fail
 the database over, take a backup.
 
 <div v-click class="mt-4 opacity-70">
-Checked orally: your expectations vs measurements, the failover, the
+Report with screenshots on Canvas: your expectations vs measurements, the failover, the
 security checks and the cost table.
 </div>
 

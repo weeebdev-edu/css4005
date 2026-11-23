@@ -1,6 +1,9 @@
 # Lab Work 13 — CI/CD and Automated Deployment
 
-This laboratory work is assigned only for attendance verification.
+**Submission: a report with screenshots is required.** Upload one PDF to
+Canvas with your repository link and, for **every** task you did,
+screenshots of the commands, their output and the result, each with a
+one-line caption. A lab without a screenshot report is not accepted.
 
 In the practice you built a pipeline step by step. In this lab you are the
 engineer who is called **after** something went wrong: a release that broke

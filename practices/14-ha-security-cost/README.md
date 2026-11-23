@@ -12,10 +12,11 @@ and ~15 min to become Multi-AZ: read the next step while you wait),
 ~45 min on Track B. If you've been stuck on one step for more than 10
 minutes, stop and ask. Don't push through alone.
 
-> **How you're checked:** this practice is done in class and checked
-> **orally**. There is no report. When you finish, keep your terminals
-> and your **game-day table** open. The instructor will ask you to show
-> the items in the *Definition of done* and to explain what you did.
+> **How you're checked:** submit a **report with screenshots** to Canvas
+> (one PDF): for **every** item in the *Definition of done*, a screenshot
+> of the command output, page or result that proves it, with a one-line
+> caption. No report = no points. In class the instructor may also ask you
+> to show an item and explain what you did (see "Be ready to explain").
 
 > [!WARNING]
 > **Test status of this handout.** Track B was run end to end by the
